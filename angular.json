@@ -123,6 +123,10 @@
               "devServerTarget": "bootcamp-resources:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
     }

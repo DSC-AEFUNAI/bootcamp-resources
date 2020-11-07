@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "dsc-aefunai-bootcamp": {
+      "hosting": {
+        "bootcamp-resources": [
+          "bootcamp-resources"
+        ]
+      }
+    }
+  }
+}
