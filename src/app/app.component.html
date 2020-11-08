@@ -182,6 +182,10 @@
           </form>
         </mat-expansion-panel>
       </mat-accordion>
+
+      <button mat-fab *ngIf="scrolledDown$ | async" color="primary" aria-label="Scroll to Top" (click)="window.scrollTo(0, 0)">
+        <mat-icon>arrow_upward</mat-icon>
+      </button>
     </div>
   </ng-container>
 

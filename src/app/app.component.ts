@@ -4,6 +4,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatChip } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable } from 'rxjs';
+import { WindowRef } from './windowref';
 
 @Component({
   selector: 'app-root',
@@ -29,8 +31,26 @@ export class AppComponent {
     { value: 'python_ml', viewValue: 'Python/Machine Learning' },
   ];
 
+  window = this.windowRef.nativeWindow;
+
+  scrolledDown$: Observable<boolean> = new Observable((subscriber) => {
+    const checkScroll = (): void => {
+      if (this.window.scrollY > this.window.innerHeight) {
+        subscriber.next(true);
+      } else {
+        subscriber.next(false);
+      }
+    };
+
+    this.window.addEventListener('scroll', checkScroll);
+
+    return () => {
+      this.window.removeEventListener('scroll', checkScroll);
+    };
+  });
+
   selectedTrack = 'design';
-  constructor(public auth: AngularFireAuth, private snackBar: MatSnackBar) {
+  constructor(public auth: AngularFireAuth, private snackBar: MatSnackBar, private windowRef: WindowRef) {
     let index = 0;
     do {
       const title: FormControl = new FormControl('', [

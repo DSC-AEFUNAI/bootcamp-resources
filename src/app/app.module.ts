@@ -23,6 +23,7 @@ import * as firebaseui from 'firebaseui';
 
 import { environment } from 'src/environments/environment';
 import { AppComponent } from './app.component';
+import { WindowRef } from './windowref';
 
 const routes: Route[] = [
   { path: '**', component: AppComponent }
@@ -48,8 +49,8 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     FirebaseUIModule.forRoot(firebaseUiAuthConfig),
-    TextFieldModule,
     ReactiveFormsModule,
+    TextFieldModule,
     MatButtonModule,
     MatChipsModule,
     MatRippleModule,
@@ -61,7 +62,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     MatSnackBarModule,
     MatToolbarModule
   ],
-  providers: [],
+  providers: [WindowRef],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
