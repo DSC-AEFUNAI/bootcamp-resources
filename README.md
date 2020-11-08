@@ -1,4 +1,9 @@
-# BootcampResources
+# Bootcamp Resources
+
+## About 
+The portal from which select head mentors provide learning resources, assignments and corrections to be used during bootcamps.
+
+## Angular
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.6.
 
