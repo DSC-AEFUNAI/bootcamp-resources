@@ -4,20 +4,194 @@
       <mat-toolbar color="primary">
         <span>Bootcamp Resources</span>
         <span class="spacer"></span>
-        <button mat-ripple mat-raised-button (click)="auth.signOut()" aria-label="Sign Out">
+
+        <button
+          mat-ripple
+          mat-raised-button
+          (click)="auth.signOut()"
+          aria-label="Sign Out"
+        >
           <span>Sign Out</span>
         </button>
       </mat-toolbar>
     </p>
+
+    <div class="manage">
+      <h4>Select Track</h4>
+      <mat-form-field appearance="outline">
+        <mat-label>Select Track</mat-label>
+        <mat-select [(value)]="selectedTrack">
+          <mat-option *ngFor="let track of tracks" [value]="track.value">
+            {{ track.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div>
+        <button mat-button (click)="accordion.openAll()">Expand All</button>
+        <button mat-button (click)="accordion.closeAll()">Collapse All</button>
+      </div>
+      <mat-accordion multi>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title> Day 1 </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <form [formGroup]="dayOneForm" (ngSubmit)="onSubmit(dayOneForm)">
+            <mat-form-field appearance="outline">
+              <mat-label>Title</mat-label>
+              <input
+                matInput
+                required
+                minlength="5"
+                [formControl]="titleControl"
+                placeholder="Name of Lesson"
+              />
+              <mat-error
+                *ngIf="
+                  titleControl.hasError('minlength') &&
+                  !titleControl.hasError('required')
+                "
+              >
+                At least 5 characters
+              </mat-error>
+              <mat-error *ngIf="titleControl.hasError('required')">
+                Title is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Lesson Link</mat-label>
+              <input
+                matInput
+                required
+                minlength="10"
+                type="url"
+                pattern="^https?:\/\/.+\..+"
+                placeholder="https://..."
+                [formControl]="linkControl"
+              />
+              <mat-error
+                *ngIf="
+                  linkControl.hasError('pattern') &&
+                  !linkControl.hasError('required')
+                "
+              >
+                Please enter a valid URL
+              </mat-error>
+              <mat-error *ngIf="linkControl.hasError('required')">
+                Lesson Link is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Detailed Assignment</mat-label>
+              <textarea
+                matInput
+                required
+                minlength="20"
+                [formControl]="assignmentControl"
+                placeholder="What should be done?"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="3"
+              ></textarea>
+
+              <mat-error
+                *ngIf="
+                  assignmentControl.hasError('minlength') &&
+                  !assignmentControl.hasError('required')
+                "
+              >
+                Please detail the assignment to help the learners
+              </mat-error>
+              <mat-error *ngIf="assignmentControl.hasError('required')">
+                Detailed Assignment is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Correction 1</mat-label>
+              <textarea
+                matInput
+                required
+                minlength="20"
+                [formControl]="correction1Control"
+                placeholder="At least one solution to the assignment"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="3"
+              ></textarea>
+              <mat-error
+                *ngIf="
+                  correction1Control.hasError('minlength') &&
+                  !correction1Control.hasError('required')
+                "
+              >
+                Please detail this correction to help the learners
+              </mat-error>
+              <mat-error *ngIf="correction1Control.hasError('required')">
+                At least one correction is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Correction 2</mat-label>
+              <textarea
+                matInput
+                minlength="20"
+                [formControl]="correction2Control"
+                placeholder="Another solution is welcomed"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="3"
+              ></textarea>
+              <mat-error *ngIf="correction2Control.hasError('minlength')">
+                Please detail this correction to help the learners
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Correction 3</mat-label>
+              <textarea
+                matInput
+                minlength="20"
+                [formControl]="correction3Control"
+                placeholder="A third solution will for sure be awesome"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="3"
+              ></textarea>
+              <mat-error *ngIf="correction3Control.hasError('minlength')">
+                Please detail this correction to help the learners
+              </mat-error>
+            </mat-form-field>
+
+            <mat-action-row>
+              <button mat-raised-button type="submit" color="primary">
+                Update
+              </button>
+            </mat-action-row>
+          </form>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
   </ng-container>
 
   <ng-template #showSignIn>
     <div class="sign-in">
       <section class="header header__container">
-        <img class="header header__image" src="/assets/images/logo-vertical.png" alt="DSC AE-FUNAI logo">
-        <img class="header header__image" src="/assets/images/logo-horizontal.png" alt="DSC AE-FUNAI logo">
+        <img
+          class="header header__image"
+          src="/assets/images/logo-vertical.png"
+          alt="DSC AE-FUNAI logo"
+        />
+        <img
+          class="header header__image"
+          src="/assets/images/logo-horizontal.png"
+          alt="DSC AE-FUNAI logo"
+        />
         <h1 class="header header__title mat-display-1">Bootcamp Resources</h1>
-        <p class="header header__message mat-body-1">Please sign in so you can assist in managing the resources utilized in the DSC AE-FUNAI Bootcamp platform.</p>
+        <p class="header header__message mat-body-1">
+          Please sign in so you can assist in managing the resources utilized in
+          the DSC AE-FUNAI Bootcamp platform.
+        </p>
       </section>
       <firebase-ui></firebase-ui>
     </div>

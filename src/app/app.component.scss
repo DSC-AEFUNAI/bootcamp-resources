@@ -1,7 +1,22 @@
+main {
+  max-width: 1400px;
 
+  @media (min-width: 1400px) {
+    margin: 0px auto;
+    border: 5px solid;
+  }
+}
 
 .spacer {
   flex: 1 1 auto;
+}
+
+.manage {
+  padding: 24px;
+}
+
+mat-form-field {
+  margin-right: 16px;
 }
 
 .sign-in {
