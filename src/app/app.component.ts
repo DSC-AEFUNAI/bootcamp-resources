@@ -1,10 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatChip } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
+import { DailyResource } from './daily-resource.model';
 import { WindowRef } from './windowref';
 
 @Component({
@@ -14,14 +16,7 @@ import { WindowRef } from './windowref';
 })
 export class AppComponent {
   @ViewChild(MatAccordion) accordion: MatAccordion;
-  controls: {
-    title: FormControl;
-    link: FormControl;
-    assignment: FormControl;
-    correction1: FormControl;
-    correction2: FormControl;
-    correction3: FormControl;
-  }[] = [];
+
   forms: FormGroup[] = [];
 
   tracks: { value: string; viewValue: string }[] = [
@@ -30,6 +25,8 @@ export class AppComponent {
     { value: 'design', viewValue: 'Design' },
     { value: 'python_ml', viewValue: 'Python/Machine Learning' },
   ];
+
+  selectedTrack = 'design';
 
   window = this.windowRef.nativeWindow;
 
@@ -49,8 +46,12 @@ export class AppComponent {
     };
   });
 
-  selectedTrack = 'design';
-  constructor(public auth: AngularFireAuth, private snackBar: MatSnackBar, private windowRef: WindowRef) {
+  constructor(
+    public auth: AngularFireAuth,
+    private db: AngularFirestore,
+    private snackBar: MatSnackBar,
+    private windowRef: WindowRef
+  ) {
     let index = 0;
     do {
       const title: FormControl = new FormControl('', [
@@ -92,14 +93,22 @@ export class AppComponent {
     } while (index < 30);
   }
 
-  onSubmit(form, day): void {
+  async onSubmit(form, day): Promise<void> {
     if (form.status === 'INVALID') {
       return;
     } else {
-      console.log(form.value);
-      this.snackBar.open(`Day ${day + 1} successfully updated`, '', {
-        duration: 2000,
-      });
+      day++;
+      try {
+        await this.db.doc<DailyResource>(`/resources/bootcamp1/${this.selectedTrack}/day${day}`)
+          .set(form.value, {merge: true});
+        this.snackBar.open(`Day ${day} successfully updated`, '', {
+          duration: 2000,
+        });
+      } catch(error) {
+        this.snackBar.open(`Error: ${error.message}. Please retry`, '', {
+          duration: 2000,
+        });
+      }
     }
   }
 }
