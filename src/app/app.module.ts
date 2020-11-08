@@ -1,6 +1,11 @@
-import { NgModule } from '@angular/core'; 
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatRippleModule } from '@angular/material/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Route } from '@angular/router';
@@ -30,10 +35,15 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    CommonModule,
     RouterModule.forRoot(routes),
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
-    FirebaseUIModule.forRoot(firebaseUiAuthConfig)
+    FirebaseUIModule.forRoot(firebaseUiAuthConfig),
+    MatButtonModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatRippleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

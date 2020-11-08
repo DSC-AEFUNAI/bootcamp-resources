@@ -1,9 +1,25 @@
 <main>
-  <section class="header header__container">
-    <img class="header header__image" src="/assets/images/logo-vertical.png" alt="DSC AE-FUNAI logo">
-    <img class="header header__image" src="/assets/images/logo-horizontal.png" alt="DSC AE-FUNAI logo">
-    <h1 class="header header__title mat-display-1">Bootcamp Resources</h1>
-    <p class="header header__message mat-body-1">Please sign in so you can assist in managing the resources utilized in the DSC AE-FUNAI Bootcamp platform.</p>
-  </section>
-  <firebase-ui></firebase-ui>
+  <ng-container *ngIf="auth.user | async as user; else showSignIn">
+    <p>
+      <mat-toolbar color="primary">
+        <span>Bootcamp Resources</span>
+        <span class="spacer"></span>
+        <button mat-ripple mat-raised-button (click)="auth.signOut()" aria-label="Sign Out">
+          <span>Sign Out</span>
+        </button>
+      </mat-toolbar>
+    </p>
+  </ng-container>
+
+  <ng-template #showSignIn>
+    <div class="sign-in">
+      <section class="header header__container">
+        <img class="header header__image" src="/assets/images/logo-vertical.png" alt="DSC AE-FUNAI logo">
+        <img class="header header__image" src="/assets/images/logo-horizontal.png" alt="DSC AE-FUNAI logo">
+        <h1 class="header header__title mat-display-1">Bootcamp Resources</h1>
+        <p class="header header__message mat-body-1">Please sign in so you can assist in managing the resources utilized in the DSC AE-FUNAI Bootcamp platform.</p>
+      </section>
+      <firebase-ui></firebase-ui>
+    </div>
+  </ng-template>
 </main>
