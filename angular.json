@@ -18,7 +18,8 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-             "dialog-polyfill"
+             "dialog-polyfill",
+             "@angular/fire/firestore"
             ],
             "outputPath": "dist/bootcamp-resources",
             "index": "src/index.html",

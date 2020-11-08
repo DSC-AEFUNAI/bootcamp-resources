@@ -31,7 +31,7 @@
       <h4>Select Track</h4>
       <mat-form-field appearance="outline">
         <mat-label>Select Track</mat-label>
-        <mat-select [(value)]="selectedTrack">
+        <mat-select [(value)]="selectedTrack" (selectionChange)="reassignResourceSub(event)">
           <mat-option *ngFor="let track of tracks" [value]="track.value">
             {{ track.viewValue }}
           </mat-option>

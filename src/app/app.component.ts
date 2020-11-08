@@ -1,11 +1,12 @@
-import { Component, ViewChild } from '@angular/core';
+import { OnInit, Component, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatChip } from '@angular/material/chips';
+import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { DailyResource } from './daily-resource.model';
 import { WindowRef } from './windowref';
 
@@ -14,7 +15,7 @@ import { WindowRef } from './windowref';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   @ViewChild(MatAccordion) accordion: MatAccordion;
 
   forms: FormGroup[] = [];
@@ -45,6 +46,8 @@ export class AppComponent {
       this.window.removeEventListener('scroll', checkScroll);
     };
   });
+
+  resourceSub: Subscription;
 
   constructor(
     public auth: AngularFireAuth,
@@ -93,22 +96,61 @@ export class AppComponent {
     } while (index < 30);
   }
 
+  ngOnInit(): void {
+    this.assignResourceSub();
+  }
+
   async onSubmit(form, day): Promise<void> {
     if (form.status === 'INVALID') {
       return;
     } else {
       day++;
       try {
-        await this.db.doc<DailyResource>(`/resources/bootcamp1/${this.selectedTrack}/day${day}`)
-          .set(form.value, {merge: true});
+        await this.db
+          .doc<DailyResource>(
+            `/resources/bootcamp1/${this.selectedTrack}/day${day}`
+          )
+          .set(form.value, { merge: true });
         this.snackBar.open(`Day ${day} successfully updated`, '', {
           duration: 2000,
         });
-      } catch(error) {
+      } catch (error) {
         this.snackBar.open(`Error: ${error.message}. Please retry`, '', {
           duration: 2000,
         });
       }
     }
+  }
+
+  assignResourceSub(): void {
+    this.resourceSub = this.db
+      .collection<DailyResource>(`/resources/bootcamp1/${this.selectedTrack}`)
+      .snapshotChanges()
+      .subscribe((changes) => {
+        for (let change of changes) {
+          try {
+            const index = Number(change.payload.doc.id.replace('day', '')) - 1;
+            const controls = this.forms[index].controls;
+            const resource = change.payload.doc.data() as DailyResource;
+            for (let key of Object.keys(controls)) {
+              controls[key].setValue(resource[key]);
+            }
+          } catch (error) {
+            this.snackBar.open(
+              `Error: ${error.message}. Please inform organizers`,
+              '',
+              {
+                duration: 2000,
+              }
+            );
+          }
+        }
+      });
+  }
+
+  reassignResourceSub(event: MatSelectChange): void {
+    this.resourceSub.unsubscribe();
+    this.forms.forEach((form) => form.reset());
+    this.assignResourceSub();
   }
 }
