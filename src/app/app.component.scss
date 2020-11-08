@@ -11,8 +11,27 @@ main {
   flex: 1 1 auto;
 }
 
+mat-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+}
+
+mat-chip-list.hide-in-mobile {
+  margin-right: 16px;
+}
+
+mat-toolbar-row.show-in-mobile {
+  height: auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
 .manage {
   padding: 24px;
+  margin-top: 64px;
 }
 
 mat-form-field {
@@ -29,23 +48,21 @@ mat-form-field {
   width: 100%;
 }
 
-@media (max-width: 575.98px) {
-  .header__image[src*="vertical"] {
-    display: inline-block;
+@media (max-width: 639.98px) {
+  .header__image[src*="horizontal"],
+  .hide-in-mobile {
+    display: none;
   }
 
-  .header__image[src*="horizontal"] {
-    display: none;
+  .manage {
+    margin-top: 128px;
   }
 }
 
-@media (min-width: 576px) {
-  .header__image[src*="vertical"] {
+@media (min-width: 640px) {
+  .header__image[src*="vertical"],
+  .show-in-mobile {
     display: none;
-  }
-
-  .header__image[src*="horizontal"] {
-    display: inline-block;
   }
 }
 

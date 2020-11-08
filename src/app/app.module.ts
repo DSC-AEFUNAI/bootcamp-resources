@@ -5,6 +5,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -50,6 +51,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     TextFieldModule,
     ReactiveFormsModule,
     MatButtonModule,
+    MatChipsModule,
     MatRippleModule,
     MatExpansionModule,
     MatFormFieldModule,

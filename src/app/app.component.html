@@ -1,9 +1,14 @@
 <main>
   <ng-container *ngIf="auth.user | async as user; else showSignIn">
-    <p>
-      <mat-toolbar color="primary">
+    <mat-toolbar color="primary" [class.mat-elevation-z2]="true">
+      <mat-toolbar-row>
         <span>Bootcamp Resources</span>
         <span class="spacer"></span>
+
+        <mat-chip-list selectable="false" class="hide-in-mobile" aria-label="Account Details">
+          <mat-chip disableRipple="true" tabindex="-1" selectable="false">{{ user.displayName }}</mat-chip>
+          <mat-chip disableRipple="true" selectable="false">{{ user.email }}</mat-chip>
+        </mat-chip-list>
 
         <button
           mat-ripple
@@ -13,8 +18,14 @@
         >
           <span>Sign Out</span>
         </button>
-      </mat-toolbar>
-    </p>
+      </mat-toolbar-row>      
+      <mat-toolbar-row class="show-in-mobile">
+        <mat-chip-list selectable="false" aria-label="Account Details">
+          <mat-chip disableRipple="true" tabindex="-1" selectable="false">{{ user.displayName }}</mat-chip>
+          <mat-chip disableRipple="true" selectable="false">{{ user.email }}</mat-chip>
+        </mat-chip-list>
+      </mat-toolbar-row>
+    </mat-toolbar>
 
     <div class="manage">
       <h4>Select Track</h4>
