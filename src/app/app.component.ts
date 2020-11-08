@@ -8,60 +8,77 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   @ViewChild(MatAccordion) accordion: MatAccordion;
-  dayOneForm: FormGroup;
-  titleControl: FormControl = new FormControl('', [
-    Validators.required,
-    Validators.minLength(5)
-  ]);
-  linkControl: FormControl = new FormControl('', [
-    Validators.required,
-    Validators.pattern(/^https?:\/\/.+\..+/)
-  ]);
-  assignmentControl: FormControl = new FormControl('', [
-    Validators.required,
-    Validators.minLength(20)
-  ]);
-  correction1Control: FormControl = new FormControl('', [
-    Validators.required,
-    Validators.minLength(20)
-  ]);
-  correction2Control: FormControl = new FormControl(
-    '',
-    Validators.minLength(20)
-  );
-  correction3Control: FormControl = new FormControl(
-    '',
-    Validators.minLength(20)
-  );
+  controls: {
+    title: FormControl;
+    link: FormControl;
+    assignment: FormControl;
+    correction1: FormControl;
+    correction2: FormControl;
+    correction3: FormControl;
+  }[] = [];
+  forms: FormGroup[] = [];
+
   tracks: { value: string; viewValue: string }[] = [
     { value: 'frontend', viewValue: 'FrontEnd' },
     { value: 'backend', viewValue: 'BackEnd' },
     { value: 'design', viewValue: 'Design' },
-    { value: 'python_ml', viewValue: 'Python/Machine Learning' }
+    { value: 'python_ml', viewValue: 'Python/Machine Learning' },
   ];
+
   selectedTrack = 'design';
   constructor(public auth: AngularFireAuth, private snackBar: MatSnackBar) {
-    this.dayOneForm = new FormGroup({
-      title: this.titleControl,
-      link: this.linkControl,
-      assignment: this.assignmentControl,
-      correction1: this.correction1Control,
-      correction2: this.correction2Control,
-      correction3: this.correction3Control
-    });
+    let index = 0;
+    do {
+      const title: FormControl = new FormControl('', [
+        Validators.required,
+        Validators.minLength(5),
+      ]);
+      const link: FormControl = new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^https?:\/\/.+\..+/),
+      ]);
+      const assignment: FormControl = new FormControl('', [
+        Validators.required,
+        Validators.minLength(20),
+      ]);
+      const correction1: FormControl = new FormControl('', [
+        Validators.required,
+        Validators.minLength(20),
+      ]);
+      const correction2: FormControl = new FormControl(
+        '',
+        Validators.minLength(20)
+      );
+      const correction3: FormControl = new FormControl(
+        '',
+        Validators.minLength(20)
+      );
+
+      this.forms.push(
+        new FormGroup({
+          title,
+          link,
+          assignment,
+          correction1,
+          correction2,
+          correction3,
+        })
+      );
+      index++;
+    } while (index < 30);
   }
 
-  onSubmit(dayOneForm): void {
-    if (dayOneForm.status === 'INVALID') {
+  onSubmit(form, day): void {
+    if (form.status === 'INVALID') {
       return;
     } else {
-      console.log(dayOneForm.value);
-      this.snackBar.open('Day 1 successfully updated', '', {
-        duration: 2000
+      console.log(form.value);
+      this.snackBar.open(`Day ${day + 1} successfully updated`, '', {
+        duration: 2000,
       });
     }
   }

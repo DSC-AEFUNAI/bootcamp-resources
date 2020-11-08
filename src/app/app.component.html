@@ -6,7 +6,7 @@
         <span class="spacer"></span>
 
         <mat-chip-list selectable="false" class="hide-in-mobile" aria-label="Account Details">
-          <mat-chip disableRipple="true" tabindex="-1" selectable="false">{{ user.displayName }}</mat-chip>
+          <mat-chip disableRipple="true" focusable="false" tabindex="-1" selectable="false">{{ user.displayName }}</mat-chip>
           <mat-chip disableRipple="true" selectable="false">{{ user.email }}</mat-chip>
         </mat-chip-list>
 
@@ -21,7 +21,7 @@
       </mat-toolbar-row>      
       <mat-toolbar-row class="show-in-mobile">
         <mat-chip-list selectable="false" aria-label="Account Details">
-          <mat-chip disableRipple="true" tabindex="-1" selectable="false">{{ user.displayName }}</mat-chip>
+          <mat-chip disableRipple="true" focusable="false" tabindex="-1" selectable="false">{{ user.displayName }}</mat-chip>
           <mat-chip disableRipple="true" selectable="false">{{ user.email }}</mat-chip>
         </mat-chip-list>
       </mat-toolbar-row>
@@ -43,30 +43,30 @@
         <button mat-button (click)="accordion.closeAll()">Collapse All</button>
       </div>
       <mat-accordion multi>
-        <mat-expansion-panel>
+        <mat-expansion-panel *ngFor="let form of forms; index as day">
           <mat-expansion-panel-header>
-            <mat-panel-title> Day 1 </mat-panel-title>
+            <mat-panel-title>Day {{ day + 1 }}</mat-panel-title>
           </mat-expansion-panel-header>
 
-          <form [formGroup]="dayOneForm" (ngSubmit)="onSubmit(dayOneForm)">
+          <form [formGroup]="form" (ngSubmit)="onSubmit(form, day)">
             <mat-form-field appearance="outline">
               <mat-label>Title</mat-label>
               <input
                 matInput
                 required
                 minlength="5"
-                [formControl]="titleControl"
+                [formControl]="form.controls.title"
                 placeholder="Name of Lesson"
               />
               <mat-error
                 *ngIf="
-                  titleControl.hasError('minlength') &&
-                  !titleControl.hasError('required')
+                  form.controls.title.hasError('minlength') &&
+                  !form.controls.title.hasError('required')
                 "
               >
                 At least 5 characters
               </mat-error>
-              <mat-error *ngIf="titleControl.hasError('required')">
+              <mat-error *ngIf="form.controls.title.hasError('required')">
                 Title is <strong>required</strong>
               </mat-error>
             </mat-form-field>
@@ -80,17 +80,17 @@
                 type="url"
                 pattern="^https?:\/\/.+\..+"
                 placeholder="https://..."
-                [formControl]="linkControl"
+                [formControl]="form.controls.link"
               />
               <mat-error
                 *ngIf="
-                  linkControl.hasError('pattern') &&
-                  !linkControl.hasError('required')
+                  form.controls.link.hasError('pattern') &&
+                  !form.controls.link.hasError('required')
                 "
               >
                 Please enter a valid URL
               </mat-error>
-              <mat-error *ngIf="linkControl.hasError('required')">
+              <mat-error *ngIf="form.controls.link.hasError('required')">
                 Lesson Link is <strong>required</strong>
               </mat-error>
             </mat-form-field>
@@ -101,7 +101,7 @@
                 matInput
                 required
                 minlength="20"
-                [formControl]="assignmentControl"
+                [formControl]="form.controls.assignment"
                 placeholder="What should be done?"
                 cdkTextareaAutosize
                 cdkAutosizeMinRows="3"
@@ -109,13 +109,13 @@
 
               <mat-error
                 *ngIf="
-                  assignmentControl.hasError('minlength') &&
-                  !assignmentControl.hasError('required')
+                  form.controls.assignment.hasError('minlength') &&
+                  !form.controls.assignment.hasError('required')
                 "
               >
                 Please detail the assignment to help the learners
               </mat-error>
-              <mat-error *ngIf="assignmentControl.hasError('required')">
+              <mat-error *ngIf="form.controls.assignment.hasError('required')">
                 Detailed Assignment is <strong>required</strong>
               </mat-error>
             </mat-form-field>
@@ -126,20 +126,20 @@
                 matInput
                 required
                 minlength="20"
-                [formControl]="correction1Control"
+                [formControl]="form.controls.correction1"
                 placeholder="At least one solution to the assignment"
                 cdkTextareaAutosize
                 cdkAutosizeMinRows="3"
               ></textarea>
               <mat-error
                 *ngIf="
-                  correction1Control.hasError('minlength') &&
-                  !correction1Control.hasError('required')
+                  form.controls.correction1.hasError('minlength') &&
+                  !form.controls.correction1.hasError('required')
                 "
               >
                 Please detail this correction to help the learners
               </mat-error>
-              <mat-error *ngIf="correction1Control.hasError('required')">
+              <mat-error *ngIf="form.controls.correction1.hasError('required')">
                 At least one correction is <strong>required</strong>
               </mat-error>
             </mat-form-field>
@@ -149,12 +149,12 @@
               <textarea
                 matInput
                 minlength="20"
-                [formControl]="correction2Control"
+                [formControl]="form.controls.correction2"
                 placeholder="Another solution is welcomed"
                 cdkTextareaAutosize
                 cdkAutosizeMinRows="3"
               ></textarea>
-              <mat-error *ngIf="correction2Control.hasError('minlength')">
+              <mat-error *ngIf="form.controls.correction2.hasError('minlength')">
                 Please detail this correction to help the learners
               </mat-error>
             </mat-form-field>
@@ -164,12 +164,12 @@
               <textarea
                 matInput
                 minlength="20"
-                [formControl]="correction3Control"
+                [formControl]="form.controls.correction3"
                 placeholder="A third solution will for sure be awesome"
                 cdkTextareaAutosize
                 cdkAutosizeMinRows="3"
               ></textarea>
-              <mat-error *ngIf="correction3Control.hasError('minlength')">
+              <mat-error *ngIf="form.controls.correction3.hasError('minlength')">
                 Please detail this correction to help the learners
               </mat-error>
             </mat-form-field>
