@@ -72,6 +72,30 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline">
+              <mat-label>Description</mat-label>
+              <textarea
+                matInput
+                required
+                minlength="20"
+                [formControl]="form.controls.description"
+                placeholder="What exactly should be learnt? ... Explain the title"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="3"
+              ></textarea>
+              <mat-error
+                *ngIf="
+                  form.controls.assignment.hasError('minlength') &&
+                  !form.controls.assignment.hasError('required')
+                "
+              >
+                Please detail the assignment to help the learners
+              </mat-error>
+              <mat-error *ngIf="form.controls.assignment.hasError('required')">
+                Detailed Assignment is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
               <mat-label>Lesson Link</mat-label>
               <input
                 matInput
@@ -106,7 +130,6 @@
                 cdkTextareaAutosize
                 cdkAutosizeMinRows="3"
               ></textarea>
-
               <mat-error
                 *ngIf="
                   form.controls.assignment.hasError('minlength') &&

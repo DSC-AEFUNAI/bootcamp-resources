@@ -61,6 +61,10 @@ export class AppComponent implements OnInit {
         Validators.required,
         Validators.minLength(5),
       ]);
+      const description: FormControl = new FormControl('', [
+        Validators.required,
+        Validators.minLength(20),
+      ]);
       const link: FormControl = new FormControl('', [
         Validators.required,
         Validators.pattern(/^https?:\/\/.+\..+/),
@@ -85,6 +89,7 @@ export class AppComponent implements OnInit {
       this.forms.push(
         new FormGroup({
           title,
+          description,
           link,
           assignment,
           correction1,
