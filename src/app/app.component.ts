@@ -6,7 +6,7 @@ import { MatAccordion } from '@angular/material/expansion';
 import { MatChip } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subscription } from 'rxjs';
-import { DailyResource } from './daily-resource.model';
+import { DailyResource, IntroResource, Resource } from './resources.model';
 import { WindowRef } from './windowref';
 
 @Component({
@@ -54,7 +54,23 @@ export class AppComponent implements OnInit {
     private snackBar: MatSnackBar,
     private windowRef: WindowRef
   ) {
-    let index = 0;
+    this.forms[0] = new FormGroup({
+      title: new FormControl('', [Validators.required, Validators.minLength(5)]),
+      description: new FormControl('', [Validators.required, Validators.minLength(20)]),
+      objectives: new FormArray(
+        [  
+          new FormControl('', [Validators.required, Validators.minLength(20)]),
+          new FormControl('', [Validators.required, Validators.minLength(20)])
+        ],
+        [Validators.required, Validators.minLength(2)]
+      ),
+      requirements: new FormArray(
+        [new FormControl('', [Validators.required, Validators.minLength(20)])],
+        [Validators.required, Validators.minLength(2)]
+      )
+    });
+    
+    let index = 1;
     do {
       const title: FormControl = new FormControl('', [
         Validators.required,
@@ -95,7 +111,7 @@ export class AppComponent implements OnInit {
         })
       );
       index++;
-    } while (index < 30);
+    } while (index <= 30);
   }
 
   ngOnInit(): void {
@@ -109,7 +125,6 @@ export class AppComponent implements OnInit {
       });
       return;
     } else {
-      day++;
       try {
         await this.db
           .doc<DailyResource>(
@@ -129,14 +144,16 @@ export class AppComponent implements OnInit {
 
   assignResourceSub(): void {
     this.resourceSub = this.db
-      .collection<DailyResource>(`/resources/bootcamp1/${this.selectedTrack}`)
+      .collection<Resource>(`/resources/bootcamp1/${this.selectedTrack}`)
       .snapshotChanges()
       .subscribe((changes) => {
         for (let change of changes) {
           try {
-            const index = Number(change.payload.doc.id.replace('day', '')) - 1;
+            const index = Number(change.payload.doc.id.replace('day', ''));
             const controls = this.forms[index].controls;
-            const resource = change.payload.doc.data() as DailyResource;
+            const resource = index === 0 
+              ? change.payload.doc.data() as IntroResource
+              : change.payload.doc.data() as DailyResource;
             for (let key of Object.keys(controls)) {
               if (Array.isArray(resource[key])) {
                 (controls[key] as FormArray).clear();

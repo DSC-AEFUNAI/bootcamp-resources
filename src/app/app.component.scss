@@ -36,6 +36,10 @@ mat-toolbar-row.show-in-mobile {
   margin-top: 64px;
 }
 
+form > div {
+  display: inline-block;
+}
+
 mat-form-field {
   margin-right: 16px;
 }

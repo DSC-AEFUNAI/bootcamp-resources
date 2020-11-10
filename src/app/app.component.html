@@ -43,9 +43,9 @@
         <button mat-button (click)="accordion.closeAll()">Collapse All</button>
       </div>
       <mat-accordion multi>
-        <mat-expansion-panel *ngFor="let form of forms; index as day">
+        <mat-expansion-panel *ngFor="let form of forms; index as day; first as isFirstForm">
           <mat-expansion-panel-header>
-            <mat-panel-title>Day {{ day + 1 }}</mat-panel-title>
+            <mat-panel-title>Day {{ day }} {{ day == 0 ? ' / Intro' :  ''  }}</mat-panel-title>
           </mat-expansion-panel-header>
 
           <form [formGroup]="form" (ngSubmit)="onSubmit(form, day)">
@@ -84,19 +84,19 @@
               ></textarea>
               <mat-error
                 *ngIf="
-                  form.controls.assignment.hasError('minlength') &&
-                  !form.controls.assignment.hasError('required')
+                  form.controls.description.hasError('minlength') &&
+                  !form.controls.description.hasError('required')
                 "
               >
-                Please detail the assignment to help the learners
+                Please explain in detail what is to be covered
               </mat-error>
-              <mat-error *ngIf="form.controls.assignment.hasError('required')">
-                Detailed Assignment is <strong>required</strong>
+              <mat-error *ngIf="form.controls.description.hasError('required')">
+                Detailed Description is <strong>required</strong>
               </mat-error>
             </mat-form-field>
 
             <div [formArray]="form.controls.objectives">
-              <mat-form-field appearance="outline" *ngFor="let objective of form.controls.objectives.controls; index as i; first as isFirst">
+              <mat-form-field appearance="outline" *ngFor="let objective of form.controls.objectives.controls; index as i">
                 <mat-label>Objective {{i + 1}}</mat-label>
                 <textarea
                   matInput
@@ -115,14 +115,14 @@
                 >
                   Please detail this objective to inspire the learners
                 </mat-error>
-                <mat-error *ngIf="objective.hasError('required') && (isFirst || i == 1)">
+                <mat-error *ngIf="objective.hasError('required') && i < 2">
                   At least two objectives are <strong>required</strong>
                 </mat-error>
-                <mat-error *ngIf="objective.hasError('required') && !isFirst && i != 1">
+                <mat-error *ngIf="objective.hasError('required') && i > 1">
                   Objective is <strong>required</strong> or delete it
                 </mat-error>
 
-                <button *ngIf="!isFirst || i == 1" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.objectives, index)">
+                <button *ngIf="i > 1" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.objectives, index)">
                   <mat-icon>close</mat-icon>
                 </button>
               </mat-form-field>
@@ -133,7 +133,45 @@
               </button>
             </div>
 
-            <mat-form-field appearance="outline">
+            <div [formArray]="form.controls.requirements" *ngIf="isFirstForm">
+              <mat-form-field appearance="outline" *ngFor="let requirement of form.controls.requirements.controls; index as i; first as isFirstReq">
+                <mat-label>Requirement {{i + 1}}</mat-label>
+                <textarea
+                  matInput
+                  required
+                  minlength="20"
+                  [formControl]="requirement"
+                  placeholder="What is needed to successfully learn in this track"
+                  cdkTextareaAutosize
+                  cdkAutosizeMinRows="3"
+                ></textarea>
+                <mat-error
+                  *ngIf="
+                    requirement.hasError('minlength') &&
+                    !requirement.hasError('required')
+                  "
+                >
+                  Please detail the needed resources to prepare for the bootcamp
+                </mat-error>
+                <mat-error *ngIf="requirement.hasError('required') && isFirstReq">
+                  At least one requirement is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="requirement.hasError('required') && !isFirstReq">
+                  Requirement is <strong>required</strong> or delete it
+                </mat-error>
+
+                <button *ngIf="!isFirstReq" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.requirements, index)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+
+              <button mat-mini-fab type="button" color="primary" aria-label="Add Requirement" (click)=
+              "addControl(form.controls.requirements)">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+
+            <mat-form-field appearance="outline" *ngIf="!isFirstForm">
               <mat-label>Lesson Link</mat-label>
               <input
                 matInput
@@ -157,7 +195,7 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" *ngIf="!isFirstForm">
               <mat-label>Detailed Assignment</mat-label>
               <textarea
                 matInput
@@ -181,8 +219,8 @@
               </mat-error>
             </mat-form-field>
 
-            <div [formArray]="form.controls.corrections">
-              <mat-form-field appearance="outline" *ngFor="let correction of form.controls.corrections.controls; index as i; first as isFirst">
+            <div [formArray]="form.controls.corrections" *ngIf="!isFirstForm">
+              <mat-form-field appearance="outline" *ngFor="let correction of form.controls.corrections.controls; index as i; first as isFirstCorr">
                 <mat-label>Correction {{i + 1}}</mat-label>
                 <textarea
                   matInput
@@ -201,14 +239,14 @@
                 >
                   Please detail this correction to help the learners
                 </mat-error>
-                <mat-error *ngIf="correction.hasError('required') && isFirst">
+                <mat-error *ngIf="correction.hasError('required') && isFirstCorr">
                   At least one correction is <strong>required</strong>
                 </mat-error>
-                <mat-error *ngIf="correction.hasError('required') && !isFirst">
+                <mat-error *ngIf="correction.hasError('required') && !isFirstCorr">
                   Correction is <strong>required</strong> or delete it
                 </mat-error>
 
-                <button *ngIf="!isFirst" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.corrections, index)">
+                <button *ngIf="!isFirstCorr" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.corrections, index)">
                   <mat-icon>close</mat-icon>
                 </button>
               </mat-form-field>
