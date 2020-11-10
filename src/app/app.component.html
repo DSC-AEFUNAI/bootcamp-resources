@@ -95,6 +95,44 @@
               </mat-error>
             </mat-form-field>
 
+            <div [formArray]="form.controls.objectives">
+              <mat-form-field appearance="outline" *ngFor="let objective of form.controls.objectives.controls; index as i; first as isFirst">
+                <mat-label>Objective {{i + 1}}</mat-label>
+                <textarea
+                  matInput
+                  required
+                  minlength="20"
+                  [formControl]="objective"
+                  placeholder="What is expected at the end of this day's lesson"
+                  cdkTextareaAutosize
+                  cdkAutosizeMinRows="3"
+                ></textarea>
+                <mat-error
+                  *ngIf="
+                    objective.hasError('minlength') &&
+                    !objective.hasError('required')
+                  "
+                >
+                  Please detail this objective to inspire the learners
+                </mat-error>
+                <mat-error *ngIf="objective.hasError('required') && (isFirst || i == 1)">
+                  At least two objectives are <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="objective.hasError('required') && !isFirst && i != 1">
+                  Objective is <strong>required</strong> or delete it
+                </mat-error>
+
+                <button *ngIf="!isFirst || i == 1" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.objectives, index)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+
+              <button mat-mini-fab type="button" color="primary" aria-label="Add Objective" (click)=
+              "addControl(form.controls.objectives)">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+
             <mat-form-field appearance="outline">
               <mat-label>Lesson Link</mat-label>
               <input
@@ -151,7 +189,7 @@
                   required
                   minlength="20"
                   [formControl]="correction"
-                  placeholder="At least one solution to the assignment"
+                  placeholder="A possible solution to the assignment"
                   cdkTextareaAutosize
                   cdkAutosizeMinRows="3"
                 ></textarea>
