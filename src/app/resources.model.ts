@@ -9,7 +9,7 @@ export interface IntroResource extends Resource {
 };
 
 export interface DailyResource extends Resource {
-  link: String;
+  links: String[];
   assignment: String;
   corrections: String[];
 };

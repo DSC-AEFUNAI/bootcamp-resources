@@ -171,29 +171,42 @@
               </button>
             </div>
 
-            <mat-form-field appearance="outline" *ngIf="!isFirstForm">
-              <mat-label>Lesson Link</mat-label>
-              <input
-                matInput
-                required
-                minlength="10"
-                type="url"
-                pattern="^https?:\/\/.+\..+"
-                placeholder="https://..."
-                [formControl]="form.controls.link"
-              />
-              <mat-error
-                *ngIf="
-                  form.controls.link.hasError('pattern') &&
-                  !form.controls.link.hasError('required')
-                "
-              >
-                Please enter a valid URL
-              </mat-error>
-              <mat-error *ngIf="form.controls.link.hasError('required')">
-                Lesson Link is <strong>required</strong>
-              </mat-error>
-            </mat-form-field>
+            <div [formArray]="form.controls.links" *ngIf="!isFirstForm">
+              <mat-form-field appearance="outline" *ngFor="let link of form.controls.links.controls; index as i; first as isFirstLink">
+                <mat-label>Resource Link {{i + 1}}</mat-label>
+                <input
+                  matInput
+                  required
+                  type="url"
+                  pattern="^https?:\/\/.+\..+"
+                  placeholder="https://..."
+                  [formControl]="link"
+                >
+                <mat-error
+                  *ngIf="
+                    link.hasError('pattern') &&
+                    !link.hasError('required')
+                  "
+                >
+                  Please enter a valid URL
+                </mat-error>
+                <mat-error *ngIf="link.hasError('required') && isFirstLink">
+                  At least one link is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="link.hasError('required') && !isFirstLink">
+                  Resource Link is <strong>required</strong> or delete it
+                </mat-error>
+
+                <button *ngIf="!isFirstLink" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.links, index)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+
+              <button mat-mini-fab type="button" color="primary" aria-label="Add Resource Link" (click)=
+              "addControl(form.controls.links)">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
 
             <mat-form-field appearance="outline" *ngIf="!isFirstForm">
               <mat-label>Detailed Assignment</mat-label>

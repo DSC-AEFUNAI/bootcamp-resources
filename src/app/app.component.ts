@@ -87,10 +87,17 @@ export class AppComponent implements OnInit {
         ],
         [Validators.required, Validators.minLength(2)]
       );
-      const link: FormControl = new FormControl('', [
-        Validators.required,
-        Validators.pattern(/^https?:\/\/.+\..+/)
-      ]);
+      const links: FormArray = new FormArray(
+        [  
+          new FormControl('', 
+            [
+              Validators.required,
+              Validators.pattern(/^https?:\/\/.+\..+/)
+            ]
+          )
+        ],
+        [Validators.required, Validators.minLength(1)]
+      );
       const assignment: FormControl = new FormControl('', [
         Validators.required,
         Validators.minLength(20)
@@ -105,7 +112,7 @@ export class AppComponent implements OnInit {
           title,
           description,
           objectives,
-          link,
+          links,
           assignment,
           corrections
         })
