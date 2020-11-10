@@ -1,10 +1,9 @@
 import { OnInit, Component, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatChip } from '@angular/material/chips';
-import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subscription } from 'rxjs';
 import { DailyResource } from './daily-resource.model';
@@ -13,7 +12,7 @@ import { WindowRef } from './windowref';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
   @ViewChild(MatAccordion) accordion: MatAccordion;
@@ -24,7 +23,7 @@ export class AppComponent implements OnInit {
     { value: 'frontend', viewValue: 'FrontEnd' },
     { value: 'backend', viewValue: 'BackEnd' },
     { value: 'design', viewValue: 'Design' },
-    { value: 'python_ml', viewValue: 'Python/Machine Learning' },
+    { value: 'python_ml', viewValue: 'Python/Machine Learning' }
   ];
 
   selectedTrack = 'design';
@@ -59,31 +58,23 @@ export class AppComponent implements OnInit {
     do {
       const title: FormControl = new FormControl('', [
         Validators.required,
-        Validators.minLength(5),
+        Validators.minLength(5)
       ]);
       const description: FormControl = new FormControl('', [
         Validators.required,
-        Validators.minLength(20),
+        Validators.minLength(20)
       ]);
       const link: FormControl = new FormControl('', [
         Validators.required,
-        Validators.pattern(/^https?:\/\/.+\..+/),
+        Validators.pattern(/^https?:\/\/.+\..+/)
       ]);
       const assignment: FormControl = new FormControl('', [
         Validators.required,
-        Validators.minLength(20),
-      ]);
-      const correction1: FormControl = new FormControl('', [
-        Validators.required,
-        Validators.minLength(20),
-      ]);
-      const correction2: FormControl = new FormControl(
-        '',
         Validators.minLength(20)
-      );
-      const correction3: FormControl = new FormControl(
-        '',
-        Validators.minLength(20)
+      ]);
+      const corrections: FormArray = new FormArray(
+        [new FormControl('', [Validators.required, Validators.minLength(20)])],
+        [Validators.required, Validators.minLength(1)]
       );
 
       this.forms.push(
@@ -92,9 +83,7 @@ export class AppComponent implements OnInit {
           description,
           link,
           assignment,
-          correction1,
-          correction2,
-          correction3,
+          corrections
         })
       );
       index++;
@@ -107,6 +96,9 @@ export class AppComponent implements OnInit {
 
   async onSubmit(form, day): Promise<void> {
     if (form.status === 'INVALID') {
+      this.snackBar.open('Please correct the errors', '', {
+        duration: 2000
+      });
       return;
     } else {
       day++;
@@ -117,11 +109,11 @@ export class AppComponent implements OnInit {
           )
           .set(form.value, { merge: true });
         this.snackBar.open(`Day ${day} successfully updated`, '', {
-          duration: 2000,
+          duration: 2000
         });
       } catch (error) {
         this.snackBar.open(`Error: ${error.message}. Please retry`, '', {
-          duration: 2000,
+          duration: 2000
         });
       }
     }
@@ -138,14 +130,21 @@ export class AppComponent implements OnInit {
             const controls = this.forms[index].controls;
             const resource = change.payload.doc.data() as DailyResource;
             for (let key of Object.keys(controls)) {
-              controls[key].setValue(resource[key]);
+              if (Array.isArray(resource[key])) {
+                (controls[key] as FormArray).clear();
+                resource[key].forEach((value) => {
+                  (controls[key] as FormArray).push(new FormControl(value));
+                });
+              } else {
+                controls[key].setValue(resource[key]);
+              }
             }
           } catch (error) {
             this.snackBar.open(
               `Error: ${error.message}. Please inform organizers`,
               '',
               {
-                duration: 2000,
+                duration: 2000
               }
             );
           }
@@ -153,9 +152,17 @@ export class AppComponent implements OnInit {
       });
   }
 
-  reassignResourceSub(event: MatSelectChange): void {
+  reassignResourceSub(): void {
     this.resourceSub.unsubscribe();
     this.forms.forEach((form) => form.reset());
     this.assignResourceSub();
+  }
+
+  addControl(array: FormArray): void {
+    array.push(new FormControl());
+  }
+
+  removeControl(array: FormArray, index: number): void {
+    array.removeAt(index);
   }
 }

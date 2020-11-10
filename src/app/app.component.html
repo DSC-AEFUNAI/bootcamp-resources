@@ -31,7 +31,7 @@
       <h4>Select Track</h4>
       <mat-form-field appearance="outline">
         <mat-label>Select Track</mat-label>
-        <mat-select [(value)]="selectedTrack" (selectionChange)="reassignResourceSub(event)">
+        <mat-select [(value)]="selectedTrack" (selectionChange)="reassignResourceSub()">
           <mat-option *ngFor="let track of tracks" [value]="track.value">
             {{ track.viewValue }}
           </mat-option>
@@ -143,59 +143,43 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Correction 1</mat-label>
-              <textarea
-                matInput
-                required
-                minlength="20"
-                [formControl]="form.controls.correction1"
-                placeholder="At least one solution to the assignment"
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="3"
-              ></textarea>
-              <mat-error
-                *ngIf="
-                  form.controls.correction1.hasError('minlength') &&
-                  !form.controls.correction1.hasError('required')
-                "
-              >
-                Please detail this correction to help the learners
-              </mat-error>
-              <mat-error *ngIf="form.controls.correction1.hasError('required')">
-                At least one correction is <strong>required</strong>
-              </mat-error>
-            </mat-form-field>
+            <div [formArray]="form.controls.corrections">
+              <mat-form-field appearance="outline" *ngFor="let correction of form.controls.corrections.controls; index as i; first as isFirst">
+                <mat-label>Correction {{i + 1}}</mat-label>
+                <textarea
+                  matInput
+                  required
+                  minlength="20"
+                  [formControl]="correction"
+                  placeholder="At least one solution to the assignment"
+                  cdkTextareaAutosize
+                  cdkAutosizeMinRows="3"
+                ></textarea>
+                <mat-error
+                  *ngIf="
+                    correction.hasError('minlength') &&
+                    !correction.hasError('required')
+                  "
+                >
+                  Please detail this correction to help the learners
+                </mat-error>
+                <mat-error *ngIf="correction.hasError('required') && isFirst">
+                  At least one correction is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="correction.hasError('required') && !isFirst">
+                  Correction is <strong>required</strong> or delete it
+                </mat-error>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Correction 2</mat-label>
-              <textarea
-                matInput
-                minlength="20"
-                [formControl]="form.controls.correction2"
-                placeholder="Another solution is welcomed"
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="3"
-              ></textarea>
-              <mat-error *ngIf="form.controls.correction2.hasError('minlength')">
-                Please detail this correction to help the learners
-              </mat-error>
-            </mat-form-field>
+                <button *ngIf="!isFirst" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.corrections, index)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Correction 3</mat-label>
-              <textarea
-                matInput
-                minlength="20"
-                [formControl]="form.controls.correction3"
-                placeholder="A third solution will for sure be awesome"
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="3"
-              ></textarea>
-              <mat-error *ngIf="form.controls.correction3.hasError('minlength')">
-                Please detail this correction to help the learners
-              </mat-error>
-            </mat-form-field>
+              <button mat-mini-fab type="button" color="primary" aria-label="Add Correction" (click)=
+              "addControl(form.controls.corrections)">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
 
             <mat-action-row>
               <button mat-raised-button type="submit" color="primary">
@@ -206,7 +190,7 @@
         </mat-expansion-panel>
       </mat-accordion>
 
-      <button mat-fab *ngIf="scrolledDown$ | async" color="primary" aria-label="Scroll to Top" (click)="window.scrollTo(0, 0)">
+      <button mat-fab class="scroll-to-top" *ngIf="scrolledDown$ | async" color="primary" aria-label="Scroll to Top" (click)="window.scrollTo(0, 0)">
         <mat-icon>arrow_upward</mat-icon>
       </button>
     </div>

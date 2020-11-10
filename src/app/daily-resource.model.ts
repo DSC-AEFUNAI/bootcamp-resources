@@ -3,7 +3,5 @@ export interface DailyResource {
   description: String;
   link: String;
   assignment: String;
-  correction1: String;
-  correction2?: String;
-  correction3?: String;
+  corrections: String[];
 };
