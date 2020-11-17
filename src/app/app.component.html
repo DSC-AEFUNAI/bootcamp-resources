@@ -122,7 +122,7 @@
                   Objective is <strong>required</strong> or delete it
                 </mat-error>
 
-                <button *ngIf="i > 1" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.objectives, index)">
+                <button *ngIf="i > 1" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.objectives, i)">
                   <mat-icon>close</mat-icon>
                 </button>
               </mat-form-field>
@@ -160,7 +160,7 @@
                   Requirement is <strong>required</strong> or delete it
                 </mat-error>
 
-                <button *ngIf="!isFirstReq" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.requirements, index)">
+                <button *ngIf="!isFirstReq" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.requirements, i)">
                   <mat-icon>close</mat-icon>
                 </button>
               </mat-form-field>
@@ -197,7 +197,7 @@
                   Resource Link is <strong>required</strong> or delete it
                 </mat-error>
 
-                <button *ngIf="!isFirstLink" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.links, index)">
+                <button *ngIf="!isFirstLink" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.links, i)">
                   <mat-icon>close</mat-icon>
                 </button>
               </mat-form-field>
@@ -259,7 +259,7 @@
                   Correction is <strong>required</strong> or delete it
                 </mat-error>
 
-                <button *ngIf="!isFirstCorr" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.corrections, index)">
+                <button *ngIf="!isFirstCorr" type="button" mat-icon-button color="primary" aria-label="Delete" (click)="removeControl(form.controls.corrections, i)">
                   <mat-icon>close</mat-icon>
                 </button>
               </mat-form-field>

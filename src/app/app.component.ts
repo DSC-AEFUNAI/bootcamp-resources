@@ -66,7 +66,7 @@ export class AppComponent implements OnInit {
       ),
       requirements: new FormArray(
         [new FormControl('', [Validators.required, Validators.minLength(20)])],
-        [Validators.required, Validators.minLength(2)]
+        [Validators.required, Validators.minLength(1)]
       )
     });
     
